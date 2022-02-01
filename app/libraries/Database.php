@@ -1,22 +1,25 @@
 <?php
+
 namespace App\libraries;
 
 use PDO;
 use PDOException;
 
-class Database {
-    private $host = "localhost";
-    private $user = "root";
-    private $pass = "";
-    private $db_name = "test";
+class Database
+{
+    private $host = DB_HOST;
+    private $user = DB_USER;
+    private $pass = DB_PASSWORD;
+    private $db_name = DB_NAME;
 
     private $statement;
     private $dbhandler;
     private $error;
 
-    public function __construct() {
+    public function __construct()
+    {
         $conn = 'mysql:host=' . $this->host . ';dbname=' . $this->db_name;
-        $options = array (
+        $options = array(
             PDO::ATTR_PERSISTENT => true,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         );
@@ -28,15 +31,18 @@ class Database {
         }
     }
 
-    public function query($sql) {
+    public function query($sql)
+    {
         $this->statement = $this->dbhandler->prepare($sql);
     }
 
-    public function exec($sql) {
+    public function exec($sql)
+    {
         $this->statement = $this->dbhandler->exec($sql);
     }
 
-    public function bind($para, $value, $type = null) {
+    public function bind($para, $value, $type = null)
+    {
         switch (is_null($type)) {
             case is_int($value):
                 $type = PDO::PARAM_INT;
@@ -53,23 +59,26 @@ class Database {
         $this->statement->bindValue($para, $value, $type);
     }
 
-    public function execute() {
+    public function execute()
+    {
         return $this->statement->execute();
     }
 
-    public function resultSet() {
+    public function resultSet()
+    {
         $this->execute();
         return $this->statement->fetchAll(PDO::FETCH_OBJ);
     }
 
-    public function single() {
+    public function single()
+    {
         $this->execute();
         return $this->statement->fetch(PDO::FETCH_OBJ);
     }
 
-    public function rowCount() {
+    public function rowCount()
+    {
         $this->execute();
         return $this->statement->rowCount();
     }
-
 }
